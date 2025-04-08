@@ -4,3 +4,9 @@ dist
 *.egg-info
 .DS_Store
 *.pyc
+
+# pixi environments
+.pixi
+*.egg-info
+
+temp/

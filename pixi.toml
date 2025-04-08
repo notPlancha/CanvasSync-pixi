@@ -1,0 +1,19 @@
+[project]
+authors = ["notPlancha <31565873+notPlancha@users.noreply.github.com>"]
+channels = ["conda-forge"]
+name = "CanvasSync"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+canvas = "python bin/canvas.py"
+
+[dependencies]
+python = ">=3.13.2,<3.14"
+pycryptodome = ">=3.22.0,<4"
+
+[pypi-dependencies]
+requests = ">=2.32.3, <3"
+py-bcrypt = ">=0.4, <0.5"
+six = ">=1.17.0, <2"
+canvassync  = { path = ".", editable = true}
