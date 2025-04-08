@@ -1,3 +1,9 @@
+## Fork note
+This fork is intended for pixi users. Just clone the repo and run `pixi run canvas`.
+
+Also, this fork also implements some chanegs to try and keep going even after failing on some files and implements [#46](https://github.com/perslev/CanvasSync/pull/46);
+if you don't want this changes use the no-changes branch.
+
 # CanvasSync
 Synchronise modules, assignments and files located on a Canvas by Instructure web server to your local computer.
 

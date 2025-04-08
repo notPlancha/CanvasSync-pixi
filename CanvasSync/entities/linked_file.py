@@ -22,6 +22,7 @@ from __future__ import print_function
 # Inbuilt modules
 import os
 import sys
+from warnings import warn
 
 # Third party modules
 import requests
@@ -110,9 +111,14 @@ class LinkedFile(CanvasEntity):
             return -1
 
         # If here, download was successful, write to disk and print status
-        with open(self.sync_path, u"wb") as out_file:
-            out_file.write(response.content)
-
+        try:
+          with open(self.sync_path, u"wb") as out_file:
+              out_file.write(response.content)
+        except OSError as e:
+          # Unkown error, skip and conitnue
+          warn(u"OS error: %s" % e)
+          self.print_status(u"FAILED", u"red", overwrite_previous_line=True)
+          return -1
         return True
 
     def walk(self, counter):

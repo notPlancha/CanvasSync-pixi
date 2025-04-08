@@ -22,6 +22,7 @@ from __future__ import print_function
 # Inbuilt modules
 import os
 import sys
+from warnings import warn
 
 # Third party
 from six import text_type
@@ -86,6 +87,10 @@ class File(CanvasEntity):
 
             # Re-raise, will be catched in CanvasSync.py
             raise e
+        
+        except FileNotFoundError as e: # I'm not sure why but some files fail when they shouldn't
+          warn(u"FileNotFoundError: %s" % e)
+          return False
 
         return True
 
