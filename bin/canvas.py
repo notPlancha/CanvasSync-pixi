@@ -31,24 +31,8 @@ import sys
 # If python 2.7, use raw_input(), otherwise use input()
 from six.moves import input
 
-# CanvasSync modules
-try:
-    from CanvasSync.entities.synchronizer import Synchronizer
-except ImportError as e:
-    if os.path.exists("../CanvasSync"):
-        debug = input("CanvasSync was not found on the PYTHONPATH, but it"
-                      " seems to exist at ../CanvasSync. "
-                      "\nDo you wish to use the "
-                      "package at this location instead? "
-                      "(usually for debugging purposes)"
-                      "\n(y/n) ").lower()
-        if debug == "y":
-            sys.path.insert(0, os.path.abspath('../'))
-            from CanvasSync.entities.synchronizer import Synchronizer
-        else:
-            raise e
-    else:
-        raise NotImplementedError("Cannot find the CanvasSync package")
+from CanvasSync.entities.synchronizer import Synchronizer
+
 
 from CanvasSync.utilities.ANSI import ANSI
 from CanvasSync.settings.settings import Settings
@@ -56,14 +40,10 @@ from CanvasSync.utilities import helpers
 from CanvasSync.utilities.instructure_api import InstructureApi
 from CanvasSync import usage
 
-try:
-    import requests
-    import bcrypt
-    import Crypto
-except ImportError:
-    print(u"\n [ERROR] Missing dependencies.\n"
-          u"         Please install requests, py-bcrypt and pycrypto "
-          u"(alternatively use PIP to install CanvasSync)'")
+import requests
+import bcrypt
+import Crypto
+
 
 
 def run_canvas_sync():
