@@ -1,3 +1,6 @@
+## Branch note
+This branch de-implements encryption.
+
 ## Fork note
 This fork is intended for pixi users. Just clone the repo and run `pixi run canvas`.
 
@@ -50,8 +53,6 @@ If you choose not to work with PIP, CanvasSync has the following dependencies th
 Dependencies
 ---------------
 - Requests  (http://docs.python-requests.org/en/master/)
-- PyCrypto  (https://pypi.python.org/pypi/pycrypto)
-- py-bcrypt (http://www.mindrot.org/projects/py-bcrypt/)
 - six (https://pypi.python.org/pypi/six)
 
 Usage examples
@@ -70,7 +71,6 @@ Command line arguments:
 -s or --setup will prompt the user to reinitialize settings
 -h or --help will show the help screen
 -S or --sync to synchronize
--p to specify settings password (potentially dangerous)
 
 Setup
 ----------
@@ -86,17 +86,20 @@ The process of generating a token is illustrated below:
 
 ![](resources/auth_token.png)
 
-The authentication token is stored in an local file encrypted using a private password. Consequently, the user must
-specify the password whenever CanvasSync is launched to synchronize at a later time. Passwords and/or auth tokens are
-cannot and will not be shared with third parties.
+The authentication token is stored in a local plain text file in your home directory. Please ensure that your system
+has appropriate file permissions to protect this file from unauthorized access.
 
 Disclaimer
 ----------
 Please note that by using CanvasSync the user allows the software to authenticate with the Canvas server on the users
-behalf. CanvasSync stores the authentication key encrypted and locally and the key is never shared with 3rd parties.
+behalf. CanvasSync stores the authentication key locally and the key is never shared with 3rd parties.
 The official version of CanvasSync will only pull resources from the server and never remove or modify resources on the
 server. Modified/rogue versions of the software could however use the authentication token to remove or modify
 resources that the user has access to on the server on the users behalf.
+
+Security note: The authentication token is now stored in plain text format. Please ensure your system is secure and 
+consider the risks if others have access to your computer. It is the users responsibility to ensure that the 
+authentication token is kept secure.
 
 CanvasSync is still in its early version and is not guaranteed to be stable.
 

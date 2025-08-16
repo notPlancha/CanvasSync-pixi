@@ -10,9 +10,7 @@ canvas = "python bin/canvas.py"
 
 [dependencies]
 python = ">=3.13.2,<3.14"
-pycryptodome = ">=3.22.0,<4"
 
 [pypi-dependencies]
 requests = ">=2.32.3, <3"
-py-bcrypt = ">=0.4, <0.5"
 six = ">=1.17.0, <2"

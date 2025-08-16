@@ -19,12 +19,8 @@ These settings include:
    after authentication under "Settings".
 
 The Settings object will prompt the user for these settings through the
-set_settings method and write them to a hidden file in the users home directory.
-The file is encrypted using a user-specified password. This password must
-be specified whenever CanvasSync is launched. Encryption is implemented via
-the PyCrypto AES-256 encryption module. The password is stored locally in a
-hashed format using the bcrypt module. At runtime, the hashed password is used
-to validate the user input password.
+set_settings method and write them to a plain text file in the users home directory.
+Settings are stored in plain text format and loaded directly from the file.
 """
 
 # TODO
@@ -45,7 +41,6 @@ import sys
 from six.moves import input
 
 # CanvasSync modules
-from CanvasSync.settings.cryptography import encrypt, decrypt
 from CanvasSync.settings import user_prompter
 from CanvasSync.utilities.instructure_api import InstructureApi
 from CanvasSync.utilities.ANSI import ANSI
@@ -87,7 +82,7 @@ class Settings(object):
                self.token != u"Not set" and \
                self.courses_to_sync[0] != u"Not set"
 
-    def load_settings(self, password):
+    def load_settings(self, password=None):
         """
         Loads the current settings from the settings file and sets the
         attributes of the Settings object
@@ -99,19 +94,20 @@ class Settings(object):
             self.set_settings()
             return True
 
-        with open(self.settings_path, u"rb") as settings_f:
-            encrypted_message = settings_f.read()
-        messages = decrypt(encrypted_message, password)
-        if not messages:
-            # Password file did not exist, set new settings
-            print(ANSI.format(u"\n[ERROR] The hashed password file does not"
-                              u"longer exist. You must re-enter settings.",
+        with open(self.settings_path, u"r", encoding='utf-8') as settings_f:
+            content = settings_f.read().strip()
+            if not content:
+                self.set_settings()
+                return True
+            messages = content.split(u"\n")
+
+        # Ensure we have at least the basic settings
+        if len(messages) < 3:
+            print(ANSI.format(u"\n[ERROR] Settings file is corrupted or incomplete. Re-entering settings.",
                               u"announcer"))
-            input(u"\nPres enter to continue.")
+            input(u"\nPress enter to continue.")
             self.set_settings()
-            return self.load_settings("")
-        else:
-            messages = messages.decode(u"utf-8").split(u"\n")
+            return self.load_settings()
 
         # Set sync path, domain and auth token
         self.sync_path, self.domain, self.token = messages[:3]
@@ -197,8 +193,8 @@ class Settings(object):
         self.print_advanced_settings(clear=False)
         print(ANSI.format(u"\n\nThese settings will be saved", u"announcer"))
 
-        # Write password encrypted settings to hidden file in home directory
-        with open(self.settings_path, u"wb") as out_file:
+        # Write settings to plain text file in home directory
+        with open(self.settings_path, u"w", encoding='utf-8') as out_file:
             settings = self.sync_path + u"\n" + self.domain + u"\n" + self.token + u"\n"
 
             for course in self.courses_to_sync:
@@ -211,7 +207,7 @@ class Settings(object):
             settings += u"Linked files$" + str(self.download_linked) + u"\n"
             settings += u"Avoid duplicates$" + str(self.avoid_duplicates) + u"\n"
 
-            out_file.write(encrypt(settings))
+            out_file.write(settings)
 
     def print_advanced_settings(self, clear=True):
         """
@@ -277,7 +273,7 @@ class Settings(object):
         Show the current settings
         If quit=True, sys.exit after user confirmation
         """
-        valid_token = self.load_settings("")
+        valid_token = self.load_settings()
 
         self.print_settings(first_time_setup=False, clear=True)
         self.print_advanced_settings(clear=False)
