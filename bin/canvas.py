@@ -28,6 +28,9 @@ import getopt
 import os
 import sys
 
+# Add the parent directory to Python path so CanvasSync module can be found
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # If python 2.7, use raw_input(), otherwise use input()
 from six.moves import input
 
