@@ -25,6 +25,7 @@ import os
 import sys
 import io
 import re
+from warnings import warn
 
 # Third party
 from six import text_type
@@ -168,10 +169,12 @@ class Page(CanvasEntity):
         If the page has already been downloaded, skip downloading.
         Page objects have no children objects and represents an end point of a folder traverse.
         """
-
-        was_downloaded = self.download()
-        self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
-
+        try:
+            was_downloaded = self.download()
+            self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+        except FileNotFoundError as e:
+            self.print_status(u"FAILED", color=u"red", overwrite_previous_line=False)
+            warn(u"Failed to sync page %s: %s" % (self.name, e))
         for file in self:
             file.update_path()
             file.sync()

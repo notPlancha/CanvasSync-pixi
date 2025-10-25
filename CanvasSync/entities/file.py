@@ -87,10 +87,6 @@ class File(CanvasEntity):
 
             # Re-raise, will be catched in CanvasSync.py
             raise e
-        
-        except FileNotFoundError as e: # I'm not sure why but some files fail when they shouldn't
-          warn(u"FileNotFoundError: %s" % e)
-          return False
 
         return True
 
@@ -119,8 +115,12 @@ class File(CanvasEntity):
         File objects have no children objects and represents an end point of a folder traverse.
         """
         if not self.locked:
+          try:
             was_downloaded = self.download()
             self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+          except FileNotFoundError as e:
+            self.print_status(u"FAILED", color=u"red", overwrite_previous_line=False)
+            warn(u"Failed to sync file %s: %s" % (self.name, e))
         else:
             self.print_status(u"LOCKED", color=u"red", overwrite_previous_line=False)
 

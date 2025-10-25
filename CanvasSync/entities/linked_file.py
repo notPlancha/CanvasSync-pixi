@@ -133,10 +133,14 @@ class LinkedFile(CanvasEntity):
         Attempt to download a file a the url 'download_url' to the path 'path'/filename while printing
         the status using an indent of print_indent to align with the parent object
         """
-        was_downloaded = self.download()
+        try:
+          was_downloaded = self.download()
 
-        if was_downloaded != - 1:
-            self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+          if was_downloaded != - 1:
+              self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+        except FileNotFoundError as e:
+          self.print_status(u"FAILED", color=u"red", overwrite_previous_line=False)
+          warn(u"Failed to sync linked file %s: %s" % (self.name, e))
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
