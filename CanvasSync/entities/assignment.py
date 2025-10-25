@@ -75,6 +75,7 @@ class Assignment(CanvasEntity):
                                                                       self.get_id())
 
         if not os.path.exists(self.sync_path + self.name + u".html"):
+            os.makedirs(os.path.dirname(self.sync_path + self.name + u".html"), exist_ok=True)
             with io.open(self.sync_path + self.name + u".html", u"w", encoding=u"utf-8") as out_file:
                 out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
                 out_file.write(u"<big><a href=\"%s\">Click here to "
